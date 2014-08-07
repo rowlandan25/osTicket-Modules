@@ -199,8 +199,8 @@ class AdminNav extends StaffNav{
             $tabs['manage']=array('desc'=>'Manage','href'=>'helptopics.php','title'=>'Manage Options');
             $tabs['emails']=array('desc'=>'Emails','href'=>'emails.php','title'=>'Email Settings');
             $tabs['staff']=array('desc'=>'Staff','href'=>'staff.php','title'=>'Manage Staff');
-            if (count($this->getRegisteredApps()))
 			$tabs['modules']=array('desc'=>'Modules','href'=>'module.php','title'=>'Modules');
+            if (count($this->getRegisteredApps()))
                 $tabs['apps']=array('desc'=>'Applications','href'=>'apps.php','title'=>'Applications');
             $this->tabs=$tabs;
         }
@@ -209,7 +209,8 @@ class AdminNav extends StaffNav{
     }
 
     function getSubMenus(){
-
+		global $cfg;
+		
         $submenus=array();
         foreach($this->getTabs() as $k=>$tab){
             $subnav=array();
@@ -222,6 +223,7 @@ class AdminNav extends StaffNav{
                     $subnav[]=array('desc'=>'Company','href'=>'settings.php?t=pages','iconclass'=>'pages');
                     $subnav[]=array('desc'=>'System','href'=>'settings.php?t=system','iconclass'=>'preferences');
                     $subnav[]=array('desc'=>'Tickets','href'=>'settings.php?t=tickets','iconclass'=>'ticket-settings');
+                    $subnav[]=array('desc'=>'Modules','href'=>'settings.php?t=modules','iconclass'=>'preferences');
                     $subnav[]=array('desc'=>'Emails','href'=>'settings.php?t=emails','iconclass'=>'email-settings');
                     $subnav[]=array('desc'=>'Access','href'=>'settings.php?t=access','iconclass'=>'users');
                     $subnav[]=array('desc'=>'Knowledgebase','href'=>'settings.php?t=kb','iconclass'=>'kb-settings');
@@ -254,7 +256,7 @@ class AdminNav extends StaffNav{
                     break;
 				case 'modules':
 					$subnav[]=array('desc'=>'Change Log','href'=>'module.php?t=modlist','iconclass'=>'pages');
-					if(strcmp($cfg->get('mod_status_init'), 'on')==0){
+					if($cfg->get('mod_status_init')){
 						//only show these two options if the status module was initialized
 						$subnav[]=array('desc'=>'Status List','href'=>'module.php?t=list','iconclass'=>'teams');
                     	$subnav[]=array('desc'=>'Status Objects','href'=>'module.php?t=objects','iconclass'=>'teams');

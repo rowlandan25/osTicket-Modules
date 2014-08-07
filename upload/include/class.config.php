@@ -858,6 +858,9 @@ class OsticketConfig extends Config {
             case 'kb':
                 return $this->updateKBSettings($vars, $errors);
                 break;
+			case 'modules':
+				return $this->updateModuleSettings($vars, $errors);
+				break;
             default:
                 $errors['err']='Unknown setting option. Get technical support.';
         }
@@ -1004,7 +1007,7 @@ class OsticketConfig extends Config {
 
 	function updateModuleSettings($vars, &$errors) {
 		
-		if(strcmp($vars['update_status'], 'on')==0){
+		if(strcmp($vars['init_ticket_status'], 'on')==0 || strcmp($vars['update_status'], 'on')==0){
 		  $errors = false;
 		  $build = $vars['curbuild'];
 		  $ver = $vars['curver'];
@@ -1028,7 +1031,7 @@ class OsticketConfig extends Config {
 				if(!$res = db_query($sql)) return false;
 
 				if(!$this->updateAll(array(
-					'mod_status_init'=>$vars['init_ticket_status'],
+					'mod_status_init'=>'1',
 					'mod_status_version'=>'v1.9.2-1.003 (alpha)',
 					'mod_status_sysbuild'=>'1003',
 				)))return false;

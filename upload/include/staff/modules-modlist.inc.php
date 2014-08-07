@@ -77,6 +77,7 @@ This is the list of files modified by this version.  Please note, I will not go 
 
 <h5>Misc Cleanup</h5>
 While converting the code to osTicket v1.9.3, I cleaned up some no longer used code that was implented while testing some stuff (such as echo's of sql statements) as well as some code used to test various other mod ideas.
+<hr />
 
 <table class="form_table settings_table" width="940" border="0" cellspacing="0" cellpadding="2">
     <thead>
