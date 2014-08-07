@@ -161,7 +161,7 @@ if($ticket->isOverdue())
                     <th>Create Date:</th>
                     <td><?php echo Format::db_datetime($ticket->getCreateDate()); ?></td>
                 </tr>
-                <tr>
+                <tr> <?php //MOD AR ?>
                   <th nowrap>Ticket Status:</th>
                   <td>
                   	<form id="updateTicketStatus" action="tickets.php?id=<?php echo $ticket->getId(); ?>#TicketStatus" name="updateTicketStatus" method="post" enctype="multipart/form-data">
@@ -253,7 +253,7 @@ if($ticket->isOverdue())
                         ?>
                     </td>
                 </tr>
-				<tr>
+				<tr>	<?php //MOD AR ?>
                   <th nowrap>&nbsp;</th>
                   <td>&nbsp;</td>
                 </tr>
@@ -478,7 +478,9 @@ $tcount+= $ticket->getNumNotes();
                 <td>
                     <?php
                     # XXX: Add user-to-name and user-to-email HTML ID#s
-                    $to =sprintf('%s &lt;%s&gt;', $ticket->getName(), $ticket->getReplyToEmail());
+                    $to =sprintf('%s &lt;%s&gt;',
+                            Format::htmlchars($ticket->getName()),
+                            $ticket->getReplyToEmail());
                     $emailReply = (!isset($info['emailreply']) || $info['emailreply']);
                     ?>
                     <select id="emailreply" name="emailreply">

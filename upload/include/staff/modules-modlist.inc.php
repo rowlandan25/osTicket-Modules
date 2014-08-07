@@ -15,18 +15,81 @@ It was requested at one point that I list the variables I use in the module, so 
   <li>mod_status_default_shape: [object ID] Tells the module which object to display in ticket queue. Can be changed in Settings -> Modules.</li>
   <li>mod_status_sysbuild: [build number] Number to compare update versions against to see if an update is necessary. Changed at the time of an update to the module.</li>
 </ul>
+<table class="form_table settings_table" width="940" border="0" cellspacing="0" cellpadding="2">
+    <thead>
+        <tr>
+            <th colspan="2">
+                <h4><font style='color:#009;'>v1.9.3-1004 (alpha)</font></h4>
+                <em>Update build 1003 to be compatible with osTicket 1.9.3</em>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+      <tr><th width='120'>osTicket Version</th><td>1.9.3</td></tr>
+      <tr><th>Module Pack Build</th><td>1004</td></tr>
+      <tr><th>Release Date</th><td>2014-08-07</td></tr>
+      <tr><th>Release Type</th><td>Alpha</td></tr>
+      <tr><th>Developers</th><td>Andrew Rowland</td></tr>
+      <tr><th>Contributors</th><td></td></tr>
+      <tr><th>Affected Modules</th><td><ul style='list-style:none; font-size: 10px; margin: 0; padding: 0; padding-left: 5px;'><li>Ticket Status (Shapes, Statuses & Colors)</li></ul></td></tr>
+    </tbody>
+</table>
+
+<h5>Modified Files</h5>
+This is the list of files modified by this version.  Please note, I will not go into details on what I changed in them (as it would be chaotic to list every change).  Also note, a file name with a <sup>*</sup> denotes a new file.
+
+<ul>
+  <li>Main Directory
+    <ul>
+      <li>include
+        <ul>
+          <li>staff
+            <ul>
+              <li>module-editobject.inc.php<sup>*</sup></li>
+              <li>module-editstatus.inc.php<sup>*</sup></li>
+              <li>module-list.inc.php<sup>*</sup></li>
+              <li>module-modlist.inc.php<sup>*</sup></li>
+              <li>module-newobject.inc.php<sup>*</sup></li>
+              <li>module-newstatus.inc.php<sup>*</sup></li>
+              <li>module-objects.inc.php<sup>*</sup></li>
+              <li>setting-modules.inc.php<sup>*</sup></li>
+              <li>ticket-open.inc.php</li>
+              <li>ticket-view.inc.php</li>
+              <li>tickets.inc.php</li>
+            </ul>
+          </li>
+          <li>class.config.php</li>
+          <li>class.nav.php</li>
+          <li>class.ticket.php</li>
+        </ul>
+      </li>
+      <li>scp
+        <ul>
+          <li>modules.php<sup>*</sup></li>
+          <li>settings.php</li>
+          <li>tickets.php</li>
+        </ul>
+      </li>
+      <li>bootstrap.php</li>
+    </ul>
+  </li>
+</ul>
+
+<h5>Misc Cleanup</h5>
+While converting the code to osTicket v1.9.3, I cleaned up some no longer used code that was implented while testing some stuff (such as echo's of sql statements) as well as some code used to test various other mod ideas.
 
 <table class="form_table settings_table" width="940" border="0" cellspacing="0" cellpadding="2">
     <thead>
         <tr>
             <th colspan="2">
-                <h4><font style='color:#009;'>v1.9.2-1.003 (alpha)</font></h4>
-                <em>First release for osTicket 1.9.2.</em>
+                <h4><font style='color:#900;'>v1.9.2-1003 (alpha)</font></h4>
+                <em>First release for osTicket 1.9.2</em>
             </th>
         </tr>
     </thead>
     <tbody>
       <tr><th width='120'>osTicket Version</th><td>1.9.2</td></tr>
+      <tr><th>Module Pack Build</th><td>1003</td></tr>
       <tr><th>Release Date</th><td>2014-08-07</td></tr>
       <tr><th>Release Type</th><td>Alpha</td></tr>
       <tr><th>Developers</th><td>Andrew Rowland</td></tr>

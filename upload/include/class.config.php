@@ -858,9 +858,6 @@ class OsticketConfig extends Config {
             case 'kb':
                 return $this->updateKBSettings($vars, $errors);
                 break;
-			case 'modules':
-				return $this->updateModuleSettings($vars, $errors);
-				break;
             default:
                 $errors['err']='Unknown setting option. Get technical support.';
         }
@@ -1035,6 +1032,11 @@ class OsticketConfig extends Config {
 					'mod_status_version'=>'v1.9.2-1.003 (alpha)',
 					'mod_status_sysbuild'=>'1003',
 				)))return false;
+			case '1003':
+				if(!$this->updateAll(array(
+					'mod_status_version'=>'v1.9.3-1004 (alpha)',
+					'mod_status_sysbuild'=>'1004',
+				)))return false;
 				break;  
 		  }
 		  return true;
@@ -1053,7 +1055,7 @@ class OsticketConfig extends Config {
 		  }
 		}
 	}
-
+	
     function updateEmailsSettings($vars, &$errors) {
 
         $f=array();

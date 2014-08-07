@@ -148,7 +148,7 @@ if ($_REQUEST['advsid'] && isset($_SESSION['adv_'.$_REQUEST['advsid']])) {
 
 $sortOptions=array('date'=>'effective_date','ID'=>'ticket.`number`',
     'pri'=>'pri.priority_urgency','name'=>'user.name','subj'=>'cdata.subject',
-    'status'=>'ticket.status','assignee'=>'assigned','staff'=>'staff', 'tstatus'=>'statusName',
+    'status'=>'ticket.status','assignee'=>'assigned','staff'=>'staff', 'tstatus'=>'statusName',	//MOD AR
     'dept'=>'dept.dept_name');
 
 $orderWays=array('DESC'=>'DESC','ASC'=>'ASC');
@@ -202,14 +202,14 @@ $qselect ='SELECT ticket.ticket_id,tlock.lock_id,ticket.`number`,ticket.dept_id,
     .' ,user.name'
     .' ,email.address as email, dept.dept_name '
          .' ,ticket.status,ticket.source,ticket.isoverdue,ticket.isanswered,ticket.created '
-		 .' ,status.statusName as statName, status.colorBG as bg, status.colorFG as fg, status.colorBD as bd';
+		 .' ,status.statusName as statName, status.colorBG as bg, status.colorFG as fg, status.colorBD as bd';	//MOD AR
 
 $qfrom=' FROM '.TICKET_TABLE.' ticket '.
        ' LEFT JOIN '.USER_TABLE.' user ON user.id = ticket.user_id'.
        ' LEFT JOIN '.USER_EMAIL_TABLE.' email ON user.id = email.user_id'.
        ' LEFT JOIN '.DEPT_TABLE.' dept ON ticket.dept_id=dept.dept_id '.
-	   ' LEFT JOIN '.MOD_STATUS_ASSIGNMENTS.' msa ON msa.ticketId=ticket.ticket_id '.
-	   ' LEFT JOIN '.MOD_STATUS.' status ON msa.statusId=status.id';
+	   ' LEFT JOIN '.MOD_STATUS_ASSIGNMENTS.' msa ON msa.ticketId=ticket.ticket_id '.	//MOD AR
+	   ' LEFT JOIN '.MOD_STATUS.' status ON msa.statusId=status.id';	//MOD AR
 
 if ($_REQUEST['uid'])
     $qfrom.=' LEFT JOIN '.TICKET_COLLABORATOR_TABLE.' collab
@@ -281,7 +281,7 @@ if ($results) {
      .' LEFT JOIN '.TICKET_THREAD_TABLE.' thread ON ( ticket.ticket_id=thread.ticket_id) '
      .' LEFT JOIN '.TICKET_COLLABORATOR_TABLE.' collab
             ON ( ticket.ticket_id=collab.ticket_id) '
-     .' WHERE ticket.ticket_id IN ('.implode(',', db_input(array_keys($results))).') AND msa.isActive = 1
+     .' WHERE ticket.ticket_id IN ('.implode(',', db_input(array_keys($results))).')
         GROUP BY ticket.ticket_id';
     $ids_res = db_query($counts_sql);
     while ($row = db_fetch_array($ids_res)) {
@@ -331,7 +331,7 @@ if ($results) {
 	        <th width="200">
                  <a <?php echo $subj_sort; ?> href="tickets.php?sort=subj&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
                     title="Sort By Subject <?php echo $negorder; ?>">Subject</a></th>
-            <?php
+            <?php	//MOD AR
             	if($cfg->exists('mod_status_init') && strcmp($cfg->get('mod_status_enabled'), 'on')==0 && $cfg->get('mod_status_default_shape') != NULL){
 					//if status mod is INITIALIZED AND status mod is ENABLED AND default shape is DEFINED.
             ?>
@@ -423,9 +423,9 @@ if ($results) {
                 <?php } ?>
                 <td align="center" title="<?php echo $row['email']; ?>" nowrap>
                   <a class="Icon <?php echo strtolower($row['source']); ?>Ticket ticketPreview" title="Preview Ticket"
-                    href="tickets.php?id=<?php echo $row['ticket_id']; ?>"><?php echo $tid; ?></a></td> <?php //Ticket ID Column ?>
-                <td align="center" nowrap><?php echo Format::db_datetime($row['effective_date']); ?></td> <?php //Date Column ?>
-                <td><a <?php if ($flag) { ?> class="Icon <?php echo $flag; ?>Ticket" title="<?php echo ucfirst($flag); ?> Ticket" <?php } ?>	<?php //Subject Column ?>
+                    href="tickets.php?id=<?php echo $row['ticket_id']; ?>"><?php echo $tid; ?></a></td>
+                <td align="center" nowrap><?php echo Format::db_datetime($row['effective_date']); ?></td>
+                <td><a <?php if ($flag) { ?> class="Icon <?php echo $flag; ?>Ticket" title="<?php echo ucfirst($flag); ?> Ticket" <?php } ?>
                     href="tickets.php?id=<?php echo $row['ticket_id']; ?>"><?php echo $subject; ?></a>
                      <?php
                         if ($threadcount>1)
@@ -437,8 +437,7 @@ if ($results) {
                             echo '<i class="icon-fixed-width icon-paperclip"></i>&nbsp;';
                     ?>
                 </td>
-                
-				  <?php
+                  <?php		//MOD AR
                     if($cfg->exists('mod_status_init') && strcmp($cfg->get('mod_status_enabled'), 'on')==0 && $cfg->get('mod_status_default_shape') != NULL){
 						//if status mod is INITIALIZED AND status mod is ENABLED AND default shape is DEFINED.
                   ?>
@@ -458,7 +457,8 @@ if ($results) {
                   <?php	
                     }
                   ?>
-                <td nowrap>&nbsp;<?php echo Format::truncate($row['name'],22,strpos($row['name'],'@')); ?>&nbsp;</td> <?php //From Column ?>
+                <td nowrap>&nbsp;<?php echo Format::htmlchars(
+                        Format::truncate($row['name'], 22, strpos($row['name'], '@'))); ?>&nbsp;</td>
                 <?php
                 if($search && !$status){
                     $displaystatus=ucfirst($row['status']);
@@ -466,12 +466,12 @@ if ($results) {
                         $displaystatus="<b>$displaystatus</b>";
                     echo "<td>$displaystatus</td>";
                 } else { ?>
-                <td class="nohover" align="center" style="background-color:<?php echo $row['priority_color']; ?>;"> <?php //Priority Column ?>
+                <td class="nohover" align="center" style="background-color:<?php echo $row['priority_color']; ?>;">
                     <?php echo $row['priority_desc']; ?></td>
                 <?php
                 }
                 ?>
-                <td nowrap>&nbsp;<?php echo $lc; ?></td>	<?php //Assigned to/Closed By Column ?>
+                <td nowrap>&nbsp;<?php echo $lc; ?></td>
             </tr>
             <?php
             } //end of while.
@@ -481,7 +481,7 @@ if ($results) {
     </tbody>
     <tfoot>
      <tr>
-        <td colspan="8">
+        <td colspan="7">
             <?php if($res && $num && $thisstaff->canManageTickets()){ ?>
             Select:&nbsp;
             <a id="selectAll" href="#ckb">All</a>&nbsp;&nbsp;

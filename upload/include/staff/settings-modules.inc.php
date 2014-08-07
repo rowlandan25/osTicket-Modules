@@ -7,8 +7,8 @@ if(!($maxfileuploads=ini_get('max_file_uploads')))
 <form action="settings.php?t=modules" method="post" id="save">
 <?php csrf_token(); ?>
 <?php 
-  $build = 1003;
-  $ver = 'v1.9.2-1.003 (alpha)';
+  $build = 1004;
+  $ver = 'v1.9.3-1004 (alpha)';
 ?>
 
 <input type="hidden" name="t" value="modules" >

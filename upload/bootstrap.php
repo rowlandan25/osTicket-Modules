@@ -125,8 +125,6 @@ class Bootstrap {
 		define('MOD_STATUS_OBJECT',$prefix.'mod_status_object');
 		define('MOD_STATUS_PROPERTY',$prefix.'mod_status_object_properties');
 		define('MOD_STATUS_ASSIGNMENTS',$prefix.'mod_status_assignments');
-		
-		define('MOD_QV_LIST',$prefix.'mod_qview_columnlist');
     }
 
     function loadConfig() {
@@ -300,8 +298,8 @@ define('I18N_DIR', INCLUDE_DIR.'i18n/');
 /*############## Do NOT monkey with anything else beyond this point UNLESS you really know what you are doing ##############*/
 
 #Current version && schema signature (Changes from version to version)
-define('THIS_VERSION', 'v1.9.2');
-define('GIT_VERSION', '4827655');
+define('THIS_VERSION', 'v1.9.3');
+define('GIT_VERSION', 'bba9ccc');
 //Path separator
 if(!defined('PATH_SEPARATOR')){
     if(strpos($_ENV['OS'],'Win')!==false || !strcasecmp(substr(PHP_OS, 0, 3),'WIN'))

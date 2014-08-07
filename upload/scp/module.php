@@ -91,13 +91,6 @@ if($page && $_POST && !$errors) {
 			else $errors['err'] = "Failed to Remove Status";
 			break;
 	}
-/*
-    if($cfg && $cfg->updateSettings($_POST,$errors)) {
-        $msg=Format::htmlchars($page[0]).' Updated Successfully';
-    } elseif(!$errors['err']) {
-        $errors['err']='Unable to update settings - correct errors below and try again';
-    }
-*/
 }
 
 
