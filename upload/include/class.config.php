@@ -1022,9 +1022,6 @@ class OsticketConfig extends Config {
 				
 				$sql="CREATE TABLE ".MOD_STATUS_OBJECT."(id INT(64) NOT NULL AUTO_INCREMENT, PRIMARY KEY(id), objectName VARCHAR(64))";
 		 		if(!$res = db_query($sql)) return false;
-				
-				$sql="CREATE TABLE ".MOD_STATUS_PROPERTY."(id INT(64) NOT NULL AUTO_INCREMENT, PRIMARY KEY(id), objectId INT(64), propertyName VARCHAR(64), valueCurrent VARCHAR(64))";
-				if(!$res = db_query($sql)) return false;
 
 				//Update 1002: Adding Mod Assignments
 				$sql="CREATE TABLE ".MOD_STATUS_ASSIGNMENTS."(id INT(64) NOT NULL AUTO_INCREMENT, PRIMARY KEY(id), ticketId INT(64), statusId INT(64), assignerId INT(64), assigned TIMESTAMP DEFAULT CURRENT_TIMESTAMP, isActive BOOLEAN DEFAULT 1)";
@@ -1041,6 +1038,16 @@ class OsticketConfig extends Config {
 					'mod_status_sysbuild'=>'1004',
 				)))return false;
 				break;  
+			case '1004':
+				$sql="CREATE TABLE ".MOD_STATUS_PROPERTY."(id INT(64) NOT NULL AUTO_INCREMENT, PRIMARY KEY(id), objectId INT(64), propertyName VARCHAR(64), valueCurrent VARCHAR(64))";
+				if(!$res = db_query($sql)) return false;
+				
+				if(!$this->updateAll(array(
+					'mod_status_version'=>'v1.9.3-1005 (alpha)',
+					'mod_status_sysbuild'=>'1005',
+				)))return false;
+				break;
+				break;
 		  }
 		  return true;
 		}else{
