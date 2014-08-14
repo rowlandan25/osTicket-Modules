@@ -1023,7 +1023,7 @@ class OsticketConfig extends Config {
 				$sql="CREATE TABLE ".MOD_STATUS_OBJECT."(id INT(64) NOT NULL AUTO_INCREMENT, PRIMARY KEY(id), objectName VARCHAR(64))";
 		 		if(!$res = db_query($sql)) return false;
 				
-				$sql="CREATE TABLE ".MOD_STATUS_PROPERTIES."(id INT(64) NOT NULL AUTO_INCREMENT, PRIMARY KEY(id), objectId INT(64), propertyName VARCHAR(64), valueCurrent VARCHAR(64))";
+				$sql="CREATE TABLE ".MOD_STATUS_PROPERTY."(id INT(64) NOT NULL AUTO_INCREMENT, PRIMARY KEY(id), objectId INT(64), propertyName VARCHAR(64), valueCurrent VARCHAR(64))";
 				if(!$res = db_query($sql)) return false;
 
 				//Update 1002: Adding Mod Assignments
