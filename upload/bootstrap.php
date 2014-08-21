@@ -125,6 +125,7 @@ class Bootstrap {
 		define('MOD_STATUS_OBJECT',$prefix.'mod_status_object');
 		define('MOD_STATUS_PROPERTY',$prefix.'mod_status_object_properties');
 		define('MOD_STATUS_ASSIGNMENTS',$prefix.'mod_status_assignments');
+		define('MOD_STATUS_ACTIONS',$prefix.'mod_status_actions');
     }
 
     function loadConfig() {

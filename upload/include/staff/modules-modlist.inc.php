@@ -15,12 +15,74 @@ It was requested at one point that I list the variables I use in the module, so 
   <li>mod_status_default_shape: [object ID] Tells the module which object to display in ticket queue. Can be changed in Settings -> Modules.</li>
   <li>mod_status_sysbuild: [build number] Number to compare update versions against to see if an update is necessary. Changed at the time of an update to the module.</li>
 </ul>
+
 <table class="form_table settings_table" width="940" border="0" cellspacing="0" cellpadding="2">
     <thead>
         <tr>
             <th colspan="2">
-                <h4><font style='color:#009;'>v1.9.3-1005 (alpha)</font></h4>
-                <em>Fixed a bug causing the object property table from being creaded.</em>
+                <h4><font style='color:#009;'>v1.9.3-1006 (alpha)</font></h4>
+                <em>Ticket Actions, Client Update and More!</em>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+      <tr><th width='120'>osTicket Version</th><td>1.9.3</td></tr>
+      <tr><th>Module Pack Build</th><td>1006</td></tr>
+      <tr><th>Release Date</th><td>2014-08-21</td></tr>
+      <tr><th>Release Type</th><td>Alpha</td></tr>
+      <tr><th>Developers</th><td>Andrew Rowland</td></tr>
+      <tr><th>Contributors</th><td></td></tr>
+      <tr><th>Affected Modules</th><td><ul style='list-style:none; font-size: 10px; margin: 0; padding: 0; padding-left: 5px;'><li>Ticket Status (Shapes, Statuses & Colors)</li></ul></td></tr>
+    </tbody>
+</table>
+
+<h5>Modified Files</h5>
+This is the list of files modified by this version.  Please note, I will not go into details on what I changed in them (as it would be chaotic to list every change).  Also note, a file name with a <sup>*</sup> denotes a new file.
+
+<ul>
+  <li>Main Directory
+    <ul>
+      <li>include
+        <ul>
+          <li>client
+            <ul>
+              <li>tickets.inc.php</li>
+              <li>view.inc.php</li>
+            </ul>
+          </li>
+          <li>staff
+            <ul>
+              <li>settings-modules.inc.php</li>
+              <li>tickets.inc.php</li>
+            </ul>
+          </li>
+	      <li>class.config.php</li>
+	      <li>class.ticket.php</li>
+        </ul>
+      </li>
+      <li>bootstrap.php</li>
+    </ul>
+  </li>
+</ul>
+
+<h5>Major Changes</h5>
+<ul>
+  <li>Client can now view the ticket status when they look at their ticket (GitHub Request #2)</li>
+  <li>Ticket Actions: When an action is performed in a ticket (closed, re-opened and assigned), a status can automatically be assigned.</li>
+</ul>
+
+<h5>Bug Fixes</h5>
+<ul>
+  <li>GitHub Issue (1): Display option does not change how the status is displayed in the ticket queue.</li>
+</ul>
+<hr />
+
+<table class="form_table settings_table" width="940" border="0" cellspacing="0" cellpadding="2">
+    <thead>
+        <tr>
+            <th colspan="2">
+                <h4><font style='color:#900;'>v1.9.3-1005 (alpha)</font></h4>
+                <em>Fixed a bug causing the object property table from being created.</em>
             </th>
         </tr>
     </thead>
@@ -49,6 +111,11 @@ This is the list of files modified by this version.  Please note, I will not go 
       <li>bootstrap.php</li>
     </ul>
   </li>
+</ul>
+
+<h5>Bug Fixes</h5>
+<ul>
+  <li>GitHub Issue (3, 4): Fixed an issue causing the Object Properties database not to be created, causing issues when attempting to create objects and assign properties.</li>
 </ul>
 <hr />
 
@@ -190,7 +257,7 @@ There was a pretty substantial shift on how status assignments are being handled
   <li>The objects properties table ($prefix_status_op) was removed (see one note down).</li>
   <li>New table ($prefix_mod_status_object_properties) was created, which will merge the two properties tables from 1.8.  It will house the object's id, the property name, and current value.  An optional recommended value is also present for future use.</li>
   <li>New table created to hold assignments of ticket status.
-</ul> 
+</ul>
 
 <h5>Admin Panel</h5>
 <ul>

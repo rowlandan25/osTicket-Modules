@@ -142,6 +142,18 @@ class Ticket {
 	  	}
 	}
 	
+	function setNewStatus($action){
+		$sql = "SELECT setStatus, isActive FROM " . MOD_STATUS_ACTIONS." WHERE id=".$action;
+		$res = db_query($sql);
+		list($newStat, $active) = db_fetch_row($res);
+
+		if($active){
+			$this->updateTicketStatus($newStat, "null", 0);
+			return true;
+		}
+		return false;
+	}
+	
 	/*
 	**	End MOD - AR
 	*/
@@ -893,7 +905,9 @@ class Ticket {
 
         if(!db_query($sql) || !db_affected_rows())
             return false;
-
+			
+		$result = $this->setNewStatus(3);
+			
         $this->reload();
         $this->logEvent('closed');
         $this->deleteDrafts();
@@ -911,7 +925,9 @@ class Ticket {
 
         if (!db_query($sql) || !db_affected_rows())
             return false;
-
+			
+		$result = $this->setNewStatus(2);
+		
         $this->logEvent('reopened', 'closed');
         $this->ht['status'] = 'open';
         $this->ht['isanswerd'] = $isanswered;
@@ -1165,7 +1181,7 @@ class Ticket {
 
         //Assignee must be an object of type Staff or Team
         if(!$assignee || !is_object($assignee)) return false;
-
+		$this->setNewStatus(1);
         $this->reload();
 
         $comments = $comments?$comments:'Ticket assignment';
@@ -2724,7 +2740,7 @@ class Ticket {
         }
 
         $ticket->reload();
-
+		
         if(!$cfg->notifyONNewStaffTicket()
                 || !isset($vars['alertuser'])
                 || !($dept=$ticket->getDept()))

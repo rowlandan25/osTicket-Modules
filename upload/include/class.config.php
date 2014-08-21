@@ -1037,7 +1037,6 @@ class OsticketConfig extends Config {
 					'mod_status_version'=>'v1.9.3-1004 (alpha)',
 					'mod_status_sysbuild'=>'1004',
 				)))return false;
-				break;  
 			case '1004':
 				$sql="CREATE TABLE ".MOD_STATUS_PROPERTY."(id INT(64) NOT NULL AUTO_INCREMENT, PRIMARY KEY(id), objectId INT(64), propertyName VARCHAR(64), valueCurrent VARCHAR(64))";
 				if(!$res = db_query($sql)) return false;
@@ -1046,12 +1045,37 @@ class OsticketConfig extends Config {
 					'mod_status_version'=>'v1.9.3-1005 (alpha)',
 					'mod_status_sysbuild'=>'1005',
 				)))return false;
-				break;
+			case '1005':
+				$sql="CREATE TABLE ".MOD_STATUS_ACTIONS."(id INT(64) NOT NULL AUTO_INCREMENT, PRIMARY KEY(id), actionName VARCHAR(64), setStatus INT(64) DEFAULT NULL, isActive INT(1))";
+				if(!$res = db_query($sql)) return false;
+				
+				$actionList = array ("Ticket Assigned", "Re-Open Ticket", "Close Ticket");
+				for($x = 0; $x < count($actionList); $x++){
+					$sql="INSERT INTO ".MOD_STATUS_ACTIONS."(actionName, isActive) VALUES ('" . $actionList[$x] . "', 0)";
+					if(!$res = db_query($sql)) return false;
+				}
+				
+				
+				if(!$this->updateAll(array(
+					'mod_status_version'=>'v1.9.3-1006 (alpha)',
+					'mod_status_sysbuild'=>'1006',
+				)))return false;
 				break;
 		  }
 		  return true;
 		}else{
 		  if(strcmp($vars['enable_ticket_status'], 'on') == 0){
+  			$sql = "SELECT id FROM ".MOD_STATUS_ACTIONS;
+  			$res = db_query($sql);
+  			while(list($actionId) = db_fetch_row($res)){
+			  if(strcmp('on', $vars['action_'.$actionId]) == 0)
+			    $active = 1;
+			  else
+			  	$active = 0;
+			  $sql = "UPDATE ".MOD_STATUS_ACTIONS." SET setStatus='".$vars['new_status_'.$actionId]."', isActive=".$active." WHERE id=".$actionId;
+			  db_query($sql);
+			}
+			  
           	return $this->updateAll(array(
             	'mod_status_enabled'=>$vars['enable_ticket_status'],
 				'mod_status_default_status'=>$vars['default_ticket_status'],

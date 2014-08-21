@@ -7,8 +7,8 @@ if(!($maxfileuploads=ini_get('max_file_uploads')))
 <form action="settings.php?t=modules" method="post" id="save">
 <?php csrf_token(); ?>
 <?php 
-  $build = 1005;
-  $ver = 'v1.9.3-1005 (alpha)';
+  $build = 1006;
+  $ver = 'v1.9.3-1006 (alpha)';
 ?>
 
 <input type="hidden" name="t" value="modules" >
@@ -26,7 +26,7 @@ if(!($maxfileuploads=ini_get('max_file_uploads')))
     <tbody
 		
         <?php 
-		  if($cfg->exists('mod_status_init') && 1 == 1){
+		  if($cfg->exists('mod_status_init')){
 		    if($build > $cfg->get('mod_status_sysbuild')){
 		?>
          <tr><td width="220" class='required'>Update Required</td>
@@ -102,7 +102,44 @@ if(!($maxfileuploads=ini_get('max_file_uploads')))
                 How should we display information - Title (hover over the shape), In-Shape Text (Text displaying the status), or both?
             </td>
         </tr>
-        <?php }else{?>
+    </tbody>
+</table>
+<table class="form_table settings_table" width="940" border="0" cellspacing="0" cellpadding="2">
+    <thead>
+        <tr>
+            <th colspan="3">
+                <h4>Ticket Status Module - Custom Actions</h4>
+                <em>Change the ticket status based on actions performed throughout the system.</em>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+    	<tr><th style='text-align:center;' width='75'>Enabled</th><th style='text-align:center;'>Action Performed</th><th style='text-align:center;'>Set Status To</th></tr>
+<?php
+  $sql = "SELECT id, actionName, setStatus, isActive FROM ".MOD_STATUS_ACTIONS;
+  $res = db_query($sql);
+  while(list($actionId, $actionName, $actionStatus, $actionActive) = db_fetch_row($res)){
+?>
+	<tr>
+      <td style='text-align:center;'><input type='checkbox' name='action_<?php echo $actionId;?>' <?php if($actionActive) echo "checked";?> <?php if($disabled)echo "disabled";?> /></td>
+      <td><?php echo $actionName;?></td>
+      <td>
+      	<select <?php if(!$cfg->exists('mod_status_enabled')|| $disabled){ echo "disabled";}?> name="new_status_<?php echo $actionId;?>">
+          <?php
+			$sql2 = "SELECT id, statusName FROM ".MOD_STATUS." WHERE active=1";
+			$res2 = db_query($sql2);
+  			while(list($id, $status)=db_fetch_row($res2)){
+		  ?>
+            	<option value='<?php echo $id;?>' <?php if($id == $actionStatus) echo "selected='selected'";?>><?php echo $status;?></option>
+       	  <?php
+			}
+		  ?>
+        </select>
+      </td>
+    </tr>
+<?php
+  }
+ }else{?>
             	<tr><td width="220" class='required'>Initialize Module</td>
             <td>
                 <input type="checkbox" name="init_ticket_status"> Initialize Now
@@ -111,6 +148,7 @@ if(!($maxfileuploads=ini_get('max_file_uploads')))
         <?php } ?>
     </tbody>
 </table>
+
 
 <p style="padding-left:250px;">
     <input class="button" type="submit" name="submit" value="Save Changes">

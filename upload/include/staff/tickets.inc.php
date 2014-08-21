@@ -451,7 +451,7 @@ if ($results) {
                         echo " " . $property . ": " . $val . ";";
                     }
                   ?>  
-                    '><?php echo $row['statName'];?></div>
+                    ' <?php if($cfg->get('mod_status_display_text')==0 || $cfg->get('mod_status_display_text')==2){?> title='<?php echo $row['statName'];?>'<?php };?>'>&nbsp;<?php if($cfg->get('mod_status_display_text')==1 || $cfg->get('mod_status_display_text')==2) echo $row['statName'];?></div>
                     </center>
                     </td>
                   <?php	
