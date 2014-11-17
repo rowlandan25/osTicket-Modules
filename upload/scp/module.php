@@ -1,116 +1,139 @@
 <?php
 /*********************************************************************
-    settings.php
+    module.php
 
-    Handles all admin settings.
+    Handles all module actions
 
-    Peter Rotich <peter@osticket.com>
-    Copyright (c)  2006-2013 osTicket
-    http://www.osticket.com
+    Andy Rowland <osmod@msrltech.com>
 
     Released under the GNU General Public License WITHOUT ANY WARRANTY.
     See LICENSE.TXT for details.
-
-    vim: expandtab sw=4 ts=4 sts=4:
 **********************************************************************/
 require('admin.inc.php');
+
 $errors=array();
 $moduleOptions=array(
-	'modlist' =>
-		array('Module List', 'module.modlist'),
-	'list' =>
-		array('Status Module List', 'modules.list'),
-	'objects' =>
-		array('Status Module Objects', 'modules.objects'),
-	'newstatus' =>
-		array('New Ticket Status', 'modules.status'),
-	'newobject' =>
-		array('New Object', 'modules.object'),
-	'editobject' =>
-		array('Edit Object', 'modules.editobject'),
-	'editstatus' =>
-		array('Edit Status', 'modules.editstatus'),
+	'changelog' =>
+		array('Change Logs', 'modules.changelog'),
+	'shape' =>
+		array('Status Shapes', 'modules.shape'),
 );
+
+
+$sql = "SELECT moduleName, modulePath FROM ".MOD_LIST." ORDER BY moduleName ASC";
+$res = db_query($sql);
+
+while(list($name, $path) = db_fetch_row($res)){
+        $newarray = array($name, 'modules.'.$path);
+        $moduleOptions[$path] = $newarray;
+}
+
 //Handle a POST.
-$target=($_REQUEST['t'] && $moduleOptions[$_REQUEST['t']])?$_REQUEST['t']:'modlist';
+$target=($_REQUEST['t'] && $moduleOptions[$_REQUEST['t']])?$_REQUEST['t']:'changelog';
 $page = false;
 if (isset($moduleOptions[$target]))
     $page = $moduleOptions[$target];
 
-
 if($page && $_POST && !$errors) {
 	$data = $_POST;
-  
-  	switch($data['do']){
-		case 'newstatus':
-			$sql = "INSERT INTO ".MOD_STATUS."(statusName, colorBG, colorFG, colorBD) VALUES ('".$data['statusname']."','".$data['bg']."','".$data['fg']."','".$data['bd']."')";
-			if($res = db_query($sql)) $msg = "Successfully Created Status!";
-			else $errors['err'] = "Error Creating Status.";
-			break;	
-		case 'newobject':
-			$sql = "INSERT INTO ".MOD_STATUS_OBJECT."(objectName) VALUES ('".$data['objectname']."')";
-			if($res = db_query($sql)) $msg = "Successfully Created Display Object!";
-			else $errors['err'] = "Error Creating Display Object.";
-			break;	
-		case 'newprop':
-			$id = $_REQUEST['id'];
-			$sql = "INSERT INTO ".MOD_STATUS_PROPERTY."(propertyName, objectId, valueCurrent) VALUES ('".$data['propname']."',".$id.",'".$data['propval']."')";
-			if($res = db_query($sql)) $msg = "Successfully Added Property!";
-			else $errors['err'] = "Error Adding Property: ".$sql;
-			break;	
-		case 'editprop':
-			$id = $_REQUEST['id'];
-			$sql = "SELECT id FROM ".MOD_STATUS_PROPERTY." WHERE objectId=".$id;
-  			$res = db_query($sql);
-  			while(list($propid)=db_fetch_row($res)){
-			  if(strcmp($data['remove_'.$propid], 'on')==0){
-				  $sql = "DELETE FROM ".MOD_STATUS_PROPERTY." WHERE id=".$propid;
-				  db_query($sql);
-			  }else{
-				  $sql = "UPDATE ".MOD_STATUS_PROPERTY." SET propertyName='".$data['propname_'.$propid]."', valueCurrent='".$data['curval_'.$propid]."' WHERE id=".$propid;
-				  db_query($sql);
-			  }
-			}
-			break;
-		case 'delobj':
-			$sql = "DELETE FROM ".MOD_STATUS_PROPERTY." WHERE objectId=".$data['objid'];
-			if($res = db_query($sql)){
-				$sql = "DELETE FROM ".MOD_STATUS_OBJECT." WHERE id=".$data['objid'];
-				if($res = db_query($sql)) $msg = "Successfully Removed Object!";
-				else $errors['err'] = "Failed to remove Object";
-			}else $errors['err'] = "Failed to remove Object Properties";
-			break;
-		case 'editstatus':
-			$sql = "Update ".MOD_STATUS." SET statusName='".$data['statusname']."', colorBG='".$data['bg']."', colorFG='".$data['fg']."', colorBD='".$data['bd']."' WHERE id=".$data['statusid'];
-			if($res = db_query($sql)) $msg = "Successfully Updated Status!";
-			else $errors['err'] = "Failed to Update Status";
-			break;
-		case 'delstatus':
-			$sql = "Update ".MOD_STATUS." SET active=0 WHERE id=".$data['statusid'];
-			if($res = db_query($sql)) $msg = "Successfully Removed Status!";
-			else $errors['err'] = "Failed to Remove Status";
-			break;
+	switch($data['opt']){
+	  case 'shape':
+	  	switch ($data['act']){
+			case 'save':
+				//	Save a shape's data
+				if($data['oid']){ //if there is an ID number sent...
+				  $objid = $data['oid'];
+				  $sql = "UPDATE ".MOD_STATUS_OBJECT." SET objectName='".$data['shapeName']."' WHERE id=".$objid;
+				  $res = db_query($sql);
+
+				  $sql = "SELECT id, propertyName, valueCurrent FROM ".MOD_STATUS_PROPERTY." WHERE objectId=".$objid;
+				  if($res = db_query($sql)){
+					  while(list($prop, $name, $val)=db_fetch_row($res)){
+						$isql = "UPDATE ".MOD_STATUS_PROPERTY." SET valueCurrent='".$data['prop_'.$prop]."', valuePrevious='".$val."' WHERE id=".$prop;
+						if(!$ires = db_query($isql)){
+							$errors['err']=__('Unable to Update Shape Property');
+						}
+					  }
+				  }else{
+					 $errors['err']=__('Unable to Update Shape');
+				  }
+				  
+				  if(!$errors){
+					  $msg=sprintf(__('Successfully Updated Shape'));
+				  }
+				}else{
+				  $sql = "INSERT INTO ".MOD_STATUS_OBJECT." (objectName) VALUES ('".$data['shapeName']."')";
+				  if($res = db_query($sql)){
+					$msg=sprintf(__('Successfully Created Shape'));
+				  }else{
+					$errors['err']=__('Unable to Create Shape');
+				  }
+				  $objid = db_insert_id();
+				}
+				break;	
+			case 'addprop':
+				$objid = $data['oid'];
+				$sql = "INSERT INTO ".MOD_STATUS_PROPERTY." (objectId, propertyName, valueCurrent) VALUES (".$data['oid'].", '".$data['property']."', '".$data['val']."')";
+				if($res = db_query($sql)){
+					$msg=sprintf(__('Successfully Added Object Property'));
+				}else{
+					$errors['err']=__('Unable to Add New Object Property');
+				}
+				break;
+			case 'delprop':
+				$objid = $data['oid'];
+				$sql = "DELETE FROM ".MOD_STATUS_PROPERTY." WHERE id=".$data['propid'];
+				if($res = db_query($sql)){
+					$msg=sprintf(__('Successfully Deleted Object Property'));
+				}else{
+					$errors['err']=__('Unable to Delete Object Property');
+				}
+				break;
+			case 'delshape':
+				$objid = $data['oid'];
+				$sql = "DELETE FROM ".MOD_STATUS_PROPERTY." WHERE objectId=".$objid;
+				if($res = db_query($sql)){
+					$sql = "DELETE FROM ".MOD_STATUS_OBJECT." WHERE id=".$objid;
+					if($res = db_query($sql)){
+						$msg=sprintf(__('Successfully Deleted Shape'));
+					}else{
+						$errors['err']=__('Unable to Delete Shape');
+					}
+				}else{
+					$errors['err']=__('Unable to Delete Object Properties');
+				}
+				break;
+		}
+	  	break;	
 	}
 }
-
 
 $config=($errors && $_POST)?Format::input($_POST):Format::htmlchars($cfg->getConfigInfo());
 $ost->addExtraHeader('<meta name="tip-namespace" content="'.$page[1].'" />',
     "$('#content').data('tipNamespace', '".$page[1]."');");
-switch($target){
-	case 'newstatus':
-	case 'list':
-		$nav->setTabActive('modules', ('module.php?t=list'));
-		break;
-	case 'editobject':
-	case 'newobject':
-	case 'objects':
-		$nav->setTabActive('modules', ('module.php?t=objects'));
-		break;
-	case 'modlist':
-		$nav->setTabActive('modules', ('module.php?t=modlist'));
-		break;
+
+$sql = "SELECT modulePath FROM ".MOD_LIST;
+$res = db_query($sql);
+$found = 0;
+
+while(!$found && list($path) = db_fetch_row($res)){
+  if(strcmp($target, $path) == 0){
+		$nav->setTabActive('modules', ('module.php?t='.$path));
+		$found = 1;
+  }
 }
+
+if(!$found){
+	switch($target){
+	  case 'shape':
+		$nav->setTabActive('modules', ('module.php?t=modstat'));
+		break;	
+	  default:
+		$nav->setTabActive('modules', ('module.php?t=changelog'));
+		break;	
+	}
+}
+
 require_once(STAFFINC_DIR.'header.inc.php');
 include_once(STAFFINC_DIR."modules-$target.inc.php");
 include_once(STAFFINC_DIR.'footer.inc.php');

@@ -13,27 +13,29 @@
 
     vim: expandtab sw=4 ts=4 sts=4:
 **********************************************************************/
+
 require('admin.inc.php');
+
 $errors=array();
 $settingOptions=array(
     'system' =>
-        array('System Settings', 'settings.system'),
+        array(__('System Settings'), 'settings.system'),
     'tickets' =>
-        array('Ticket Settings and Options', 'settings.ticket'),
+        array(__('Ticket Settings and Options'), 'settings.ticket'),
     'emails' =>
-        array('Email Settings', 'settings.email'),
+        array(__('Email Settings'), 'settings.email'),
     'pages' =>
-        array('Site Pages', 'settings.pages'),
+        array(__('Site Pages'), 'settings.pages'),
     'access' =>
-        array('Access Control', 'settings.access'),
+        array(__('Access Control'), 'settings.access'),
     'kb' =>
-        array('Knowledgebase Settings', 'settings.kb'),
+        array(__('Knowledgebase Settings'), 'settings.kb'),
     'autoresp' =>
-        array('Autoresponder Settings', 'settings.autoresponder'),
+        array(__('Autoresponder Settings'), 'settings.autoresponder'),
     'alerts' =>
-        array('Alerts and Notices Settings', 'settings.alerts'),
+        array(__('Alerts and Notices Settings'), 'settings.alerts'),
 	'modules' =>
-		array('Module Settings', 'settings.modules'),
+		array(__('Module Settings'), 'settings.modules'),
 );
 //Handle a POST.
 $target=($_REQUEST['t'] && $settingOptions[$_REQUEST['t']])?$_REQUEST['t']:'system';
@@ -42,10 +44,16 @@ if (isset($settingOptions[$target]))
     $page = $settingOptions[$target];
 
 if($page && $_POST && !$errors) {
-    if($cfg && $cfg->updateSettings($_POST,$errors)) {
-        $msg=Format::htmlchars($page[0]).' Updated Successfully';
+    if($_POST['optm']==1142){
+        if(update_modules()){
+          $msg=sprintf(__('Successfully updated %s'), Format::htmlchars($page[0]));
+        }else{
+          $errors['err']=__('Unable to update settings - correct errors below and try again');
+        }
+    }elseif($cfg && $cfg->updateSettings($_POST,$errors)) {
+        $msg=sprintf(__('Successfully updated %s'), Format::htmlchars($page[0]));
     } elseif(!$errors['err']) {
-        $errors['err']='Unable to update settings - correct errors below and try again';
+        $errors['err']=__('Unable to update settings - correct errors below and try again');
     }
 }
 

@@ -1,8 +1,103 @@
 <?php
 if(!defined('OSTADMININC') || !$thisstaff || !$thisstaff->isAdmin() || !$config) die('Access Denied');
 ?>
+
 <h2>Module Change Logs</h2>
-Current Version: <font color='#990000'><?php echo $cfg->get('mod_status_version');?></font>
+
+<table class="form_table settings_table" width="900" border="0" cellspacing="0" cellpadding="2">
+    <thead>
+        <tr>
+            <th colspan="2">
+                <h4><font style='color:#009;'>v1.9.4-1008 (alpha)</font></h4>
+                <em>Upgraded to osTicket v1.9.4.  This release starts the process to modify as few osTicket files as possible, moving those changes instead into new files more easily integrated into future osTicket releases.</em>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+      <tr><th width='220'>osTicket Version</th><td>1.9.4</td></tr>
+      <tr><th>Release Date</th><td>2014-11-04</td></tr>
+      <tr><th>Module Builds</th><td>
+        <ul style='list-style:none; font-size: 12px; margin: 0; padding: 0; padding-left: 5px;'>
+            <li>Status: <?php echo getPackageBuild('status');?></li>
+            <li>Status Actions: <?php echo getPackageBuild('status_actions');?></li>
+        </ul>
+      </td></tr>
+      <tr><th>Release Type</th><td>Alpha</td></tr>
+      <tr><th>Developers</th><td>Andrew Rowland</td></tr>
+      <tr><th>Contributors</th><td></td></tr>
+    </tbody>
+</table>
+<h5>Affected Modules</h5>
+<em>Ticket Status</em>
+<p>The ticket status module has been upgraded to utilize osTicket's new status system.  The module connects with osTicket's status list and expands on its capabilities by adding colors and shapes.</p>
+<em>Status Actions</em>
+<p>The status actions module has been pulled out of the ticket status module and is now seperate.  This means that if you do not want or need the color/shape module enabled, you don't need to use it.  The status actions module allows a ticket's status to change automatically based upon certain conditions - such as when a ticket is opened, assigned, or missed a due date.</p>
+
+<h5>Modified Files</h5>
+This is the list of files modified by this version.  Please note, I will not go into details on what I changed in them (as it would be chaotic to list every change).  Also note, a file name with a <sup>*</sup> denotes a new file.
+
+<ul>
+  <li>Main Directory
+    <ul>
+      <li>include
+        <ul>
+          <li>client
+            <ul>
+              <li></li>
+            </ul>
+          </li>
+          <li>staff
+            <ul>
+              <li>settings-modules.inc.php<sup>*</sup></li>
+              <li>modules.inc.php<sup>*</sup></li>
+              <li>modules-changelog.inc.php<sup>*</sup></li>
+              <li>modules-shape.inc.php<sup>*</sup></li>
+              <li>modules-modstat.inc.php<sup>*</sup></li>
+              <li>tickets.inc.php</li>
+            </ul>
+          </li>
+          <li>class.nav.php</li>
+          <li>class.ticket.php</li>
+        </ul>
+      </li>
+      <li>scp
+        <ul>
+          <li>admin.inc.php</li>
+          <li>module.php</li>
+          <li>settings.php</li>
+          <li>tickets.php</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h5>Orphaned Files</h5>
+<p>The following files have been orphaned as of Build 1008 and can be removed after upgrading:</p>
+<ul>
+  <li>includes\staff\modules-editobject.inc.php</li>
+  <li>includes\staff\modules-editstatus.inc.php</li>
+  <li>includes\staff\modules-list.inc.php</li>
+  <li>includes\staff\modules-modlist.inc.php</li>
+  <li>includes\staff\modules-newobject.inc.php</li>
+  <li>includes\staff\modules-newstatus.inc.php</li>
+  <li>includes\staff\modules-objects.inc.php</li>
+</ul>
+
+<h5>Major Changes</h5>
+<ul>
+  <li>Upgraded the code base to osTicket v1.9.4</li>
+  <li>Moved upgrade files & operations out of class.config.php into modules.inc.php</li>
+  <li>Removed SQL Table Definitions out of bootstrap.php into modules.inc.php</li>
+  <li>Integrated Status module with osTicket's built in Statuses part of v1.9.4</li>
+</ul>
+
+<h5>Bug Fixes</h5>
+<ul>
+  <li>GitHub Issue #5 - Corrected an issue where ticket would not appear to update</li>
+  <li>GitHub Issue #8 - Corrected an issue where changing the sort would change the status a ticket showed</li>
+</ul>
+<hr />
 
 <h5>Configuration Variables</h5>
 It was requested at one point that I list the variables I use in the module, so those will be listed here.
@@ -16,19 +111,75 @@ It was requested at one point that I list the variables I use in the module, so 
   <li>mod_status_sysbuild: [build number] Number to compare update versions against to see if an update is necessary. Changed at the time of an update to the module.</li>
 </ul>
 
-<table class="form_table settings_table" width="940" border="0" cellspacing="0" cellpadding="2">
+<table class="form_table settings_table" width="900" border="0" cellspacing="0" cellpadding="2">
     <thead>
         <tr>
             <th colspan="2">
-                <h4><font style='color:#009;'>v1.9.3-1006 (alpha)</font></h4>
-                <em>Ticket Actions, Client Update and More!</em>
+                <h4><font style='color:#900;'>v1.9.3-1007 (alpha)</font></h4>
+                <em>Expanded Status Assignments</em>
             </th>
         </tr>
     </thead>
     <tbody>
-      <tr><th width='120'>osTicket Version</th><td>1.9.3</td></tr>
-      <tr><th>Module Pack Build</th><td>1006</td></tr>
+      <tr><th width='220'>osTicket Version</th><td>1.9.3</td></tr>
+      <tr><th>Module Pack Build</th><td>1007</td></tr>
       <tr><th>Release Date</th><td>2014-08-21</td></tr>
+      <tr><th>Release Type</th><td>Alpha</td></tr>
+      <tr><th>Developers</th><td>Andrew Rowland</td></tr>
+      <tr><th>Contributors</th><td></td></tr>
+      <tr><th>Affected Modules</th><td><ul style='list-style:none; font-size: 10px; margin: 0; padding: 0; padding-left: 5px;'><li>Ticket Status (Shapes, Statuses & Colors)</li></ul></td></tr>
+    </tbody>
+</table>
+
+<h5>Modified Files</h5>
+This is the list of files modified by this version.  Please note, I will not go into details on what I changed in them (as it would be chaotic to list every change).  Also note, a file name with a <sup>*</sup> denotes a new file.
+
+<ul>
+  <li>Main Directory
+    <ul>
+      <li>include
+        <ul>
+          <li>client
+            <ul>
+              <li>view.inc.php</li>
+            </ul>
+          </li>
+          <li>staff
+            <ul>
+              <li>tickets-view.inc.php</li>
+            </ul>
+          </li>
+          <li>class.ticket.php</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h5>Major Changes</h5>
+<ul>
+  <li>Change status when Posting A Reply or Internal Note</li>
+</ul>
+
+<h5>Bug Fixes</h5>
+<ul>
+  <li>None</li>
+</ul>
+<hr />
+
+<table class="form_table settings_table" width="900" border="0" cellspacing="0" cellpadding="2">
+    <thead>
+        <tr>
+            <th colspan="2">
+                <h4><font style='color:#900;'>v1.9.3-1006 (alpha)</font></h4>
+                <em>Added client side functionality</em>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+      <tr><th width='220'>osTicket Version</th><td>1.9.3</td></tr>
+      <tr><th>Module Pack Build</th><td>1006</td></tr>
+      <tr><th>Release Date</th><td></td></tr>
       <tr><th>Release Type</th><td>Alpha</td></tr>
       <tr><th>Developers</th><td>Andrew Rowland</td></tr>
       <tr><th>Contributors</th><td></td></tr>
@@ -56,8 +207,8 @@ This is the list of files modified by this version.  Please note, I will not go 
               <li>tickets.inc.php</li>
             </ul>
           </li>
-	      <li>class.config.php</li>
-	      <li>class.ticket.php</li>
+          <li>class.config.php</li>
+          <li>class.ticket.php</li>
         </ul>
       </li>
       <li>bootstrap.php</li>
@@ -77,7 +228,7 @@ This is the list of files modified by this version.  Please note, I will not go 
 </ul>
 <hr />
 
-<table class="form_table settings_table" width="940" border="0" cellspacing="0" cellpadding="2">
+<table class="form_table settings_table" width="900" border="0" cellspacing="0" cellpadding="2">
     <thead>
         <tr>
             <th colspan="2">
@@ -87,7 +238,7 @@ This is the list of files modified by this version.  Please note, I will not go 
         </tr>
     </thead>
     <tbody>
-      <tr><th width='120'>osTicket Version</th><td>1.9.3</td></tr>
+      <tr><th width='220'>osTicket Version</th><td>1.9.3</td></tr>
       <tr><th>Module Pack Build</th><td>1005</td></tr>
       <tr><th>Release Date</th><td>2014-08-14</td></tr>
       <tr><th>Release Type</th><td>Alpha</td></tr>
@@ -119,7 +270,7 @@ This is the list of files modified by this version.  Please note, I will not go 
 </ul>
 <hr />
 
-<table class="form_table settings_table" width="940" border="0" cellspacing="0" cellpadding="2">
+<table class="form_table settings_table" width="900" border="0" cellspacing="0" cellpadding="2">
     <thead>
         <tr>
             <th colspan="2">
@@ -183,7 +334,7 @@ This is the list of files modified by this version.  Please note, I will not go 
 While converting the code to osTicket v1.9.3, I cleaned up some no longer used code that was implented while testing some stuff (such as echo's of sql statements) as well as some code used to test various other mod ideas.
 <hr />
 
-<table class="form_table settings_table" width="940" border="0" cellspacing="0" cellpadding="2">
+<table class="form_table settings_table" width="900" border="0" cellspacing="0" cellpadding="2">
     <thead>
         <tr>
             <th colspan="2">
@@ -193,7 +344,7 @@ While converting the code to osTicket v1.9.3, I cleaned up some no longer used c
         </tr>
     </thead>
     <tbody>
-      <tr><th width='120'>osTicket Version</th><td>1.9.2</td></tr>
+      <tr><th width='220'>osTicket Version</th><td>1.9.2</td></tr>
       <tr><th>Module Pack Build</th><td>1003</td></tr>
       <tr><th>Release Date</th><td>2014-08-07</td></tr>
       <tr><th>Release Type</th><td>Alpha</td></tr>
