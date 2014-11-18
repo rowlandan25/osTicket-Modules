@@ -1,7 +1,4 @@
 <?php
-/*
-href='module.php?opt=del&prop=<?php echo $pid;?>&id=<?php echo $pid;?>' 
-*/
 if(!defined('OSTADMININC') || !$thisstaff || !$thisstaff->isAdmin() || !$config) die('Access Denied');
 
 if(!$objid) $objid = $_REQUEST['id'];

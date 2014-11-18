@@ -17,9 +17,8 @@ if(!defined('OSTADMININC') || !$thisstaff || !$thisstaff->isAdmin() || !$config)
       <tr><th width='220'>osTicket Version</th><td>1.9.4</td></tr>
       <tr><th>Release Date</th><td>2014-11-04</td></tr>
       <tr><th>Module Builds</th><td>
-        <ul style='list-style:none; font-size: 12px; margin: 0; padding: 0; padding-left: 5px;'>
-            <li>Status: <?php echo getPackageBuild('status');?></li>
-            <li>Status Actions: <?php echo getPackageBuild('status_actions');?></li>
+        <ul style='list-style:none; font-size: 12px; margin: 0; padding: 0; padding-left: 0px;'>
+            <li>Status (Colors & Shapes): <?php echo getPackageBuild('status');?></li>
         </ul>
       </td></tr>
       <tr><th>Release Type</th><td>Alpha</td></tr>
@@ -27,11 +26,12 @@ if(!defined('OSTADMININC') || !$thisstaff || !$thisstaff->isAdmin() || !$config)
       <tr><th>Contributors</th><td></td></tr>
     </tbody>
 </table>
+<h5>Release Notes</h5>
+<p>This release migrates previous versions (builds 1007 and earlier) to osTicket's new status system.  Upgrading from previous builds to this 1008 build will move all of your already created statuses over, along with any shapes and color assignments.  The module pack was redesigned in order to make updating with future versions easier - seperating out a lot of functions and information that was placed in other osTicket files.</p>
+<p>Currently assigning colors can be a bit of a hassle.  In the future, you will be able to see the affect of your palette choices in real time.  However, at this time you can only see the color preview in Modules -> Statuses.</p>
 <h5>Affected Modules</h5>
 <em>Ticket Status</em>
 <p>The ticket status module has been upgraded to utilize osTicket's new status system.  The module connects with osTicket's status list and expands on its capabilities by adding colors and shapes.</p>
-<em>Status Actions</em>
-<p>The status actions module has been pulled out of the ticket status module and is now seperate.  This means that if you do not want or need the color/shape module enabled, you don't need to use it.  The status actions module allows a ticket's status to change automatically based upon certain conditions - such as when a ticket is opened, assigned, or missed a due date.</p>
 
 <h5>Modified Files</h5>
 This is the list of files modified by this version.  Please note, I will not go into details on what I changed in them (as it would be chaotic to list every change).  Also note, a file name with a <sup>*</sup> denotes a new file.
@@ -41,11 +41,6 @@ This is the list of files modified by this version.  Please note, I will not go 
     <ul>
       <li>include
         <ul>
-          <li>client
-            <ul>
-              <li></li>
-            </ul>
-          </li>
           <li>staff
             <ul>
               <li>settings-modules.inc.php<sup>*</sup></li>
@@ -57,7 +52,6 @@ This is the list of files modified by this version.  Please note, I will not go 
             </ul>
           </li>
           <li>class.nav.php</li>
-          <li>class.ticket.php</li>
         </ul>
       </li>
       <li>scp
@@ -90,6 +84,8 @@ This is the list of files modified by this version.  Please note, I will not go 
   <li>Moved upgrade files & operations out of class.config.php into modules.inc.php</li>
   <li>Removed SQL Table Definitions out of bootstrap.php into modules.inc.php</li>
   <li>Integrated Status module with osTicket's built in Statuses part of v1.9.4</li>
+  <li>Removed unused database items from previous versions</li>
+  <li>Created logic to determine whether the module pack has ever been installed before in order to better facilitate installation or upgrading</li>
 </ul>
 
 <h5>Bug Fixes</h5>
