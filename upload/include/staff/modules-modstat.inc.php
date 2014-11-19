@@ -17,8 +17,8 @@ if(!defined('OSTADMININC') || !$thisstaff || !$thisstaff->isAdmin() || !$config)
           <th width='400'>Status Name</th><th width='200'>Status State</th><th width='75'>Foreground</th><th width='75'>Background</th><th width='75'>Border</th><th width='150'>Preview</th></tr>
 <?php
         $prop = array();
-        $fg = $cfg->get('mod_status_bgcolor');
-        $bg = $cfg->get('mod_status_fgcolor');
+        $bg = $cfg->get('mod_status_bgcolor');
+        $fg = $cfg->get('mod_status_fgcolor');
         $bd = $cfg->get('mod_status_bdcolor');
         
         $sql = "SELECT id, name, state, properties FROM ".TICKET_STATUS_TABLE;
@@ -30,9 +30,13 @@ if(!defined('OSTADMININC') || !$thisstaff || !$thisstaff->isAdmin() || !$config)
             $dump2 = str_replace(",", ":", $dump);
             $vardump = explode(':', $dump2);
 
+			$prop[$fg]='';
+			$prop[$bg]='';
+			$prop[$bd]='';
+
             for($i = 0; $i<count($vardump); $i+=2){
                 $prop[$vardump[$i]] = $vardump[$i+1];
-            }
+            }			
 ?>
             <tr>
               <td><?php echo $name;?></td>
@@ -43,7 +47,7 @@ if(!defined('OSTADMININC') || !$thisstaff || !$thisstaff->isAdmin() || !$config)
               <td>
               	<div style='<?php $sql = "SELECT propertyName, valueCurrent FROM ".MOD_STATUS_PROPERTY." WHERE objectId=".$cfg->get('mod_status_display'); $res = db_query($sql); while(list($pname, $val)=db_fetch_row($res)){ echo $pname . ": " . $val . "; ";} ?> background-color:<?php echo $prop[$bg];?>; color:<?php echo $prop[$fg];?>; border-color:<?php echo $prop[$bd];?>' <?php if($cfg->get('mod_status_display_text')!=2){echo "title='".$name."'";}?>>
                 <?php if($cfg->get('mod_status_display_text')!=1){echo $name;}?>
-              </div>
+              	</div>
               </td>
             </tr>
 
@@ -75,7 +79,7 @@ if(!defined('OSTADMININC') || !$thisstaff || !$thisstaff->isAdmin() || !$config)
             <td><?php echo $name;?>&nbsp;&nbsp;[<a href='module.php?t=shape&id=<?php echo $id;?>'>Edit</a>]</td>
             <td>
               <div style='<?php $sql = "SELECT propertyName, valueCurrent FROM ".MOD_STATUS_PROPERTY." WHERE objectId=".$id; $res = db_query($sql); while(list($prop, $val)=db_fetch_row($res)){ echo $prop . ": " . $val . "; ";} ?>'>
-                Test Span
+                Test Div
               </div>
             </td>
             <td></td>

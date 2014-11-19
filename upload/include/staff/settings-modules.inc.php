@@ -80,8 +80,8 @@ if(!($maxfileuploads=ini_get('max_file_uploads')))
 	  </td></tr>
       <tr><td>Show Column in Queue</td><td><input type='checkbox' name="columnview" <?php echo $cfg->get('mod_status_show_column')?'checked="checked"':''; ?> <?php if($disabled)echo "disabled";?>></td></tr>
 	  <tr><th colspan='2'><em>This is purely informational.  These values are not able to be changed unless done manually in the database.</em></th></tr>
-	  <tr><td>Foreground Color Field</td><td><?php echo $cfg->get('mod_status_bgcolor');?></td></tr>
-	  <tr><td>Background Color Field</td><td><?php echo $cfg->get('mod_status_fgcolor');?></td></tr>
+	  <tr><td>Background Color Field</td><td><?php echo $cfg->get('mod_status_bgcolor');?></td></tr>
+	  <tr><td>Foreground Color Field</td><td><?php echo $cfg->get('mod_status_fgcolor');?></td></tr>
 	  <tr><td>Shape Border Color Field</td><td><?php echo $cfg->get('mod_status_bdcolor');?></td></tr>
   </tbody>
 </table>

@@ -3,19 +3,73 @@ if(!defined('OSTADMININC') || !$thisstaff || !$thisstaff->isAdmin() || !$config)
 ?>
 
 <h2>Module Change Logs</h2>
+<table class="form_table settings_table" width="900" border="0" cellspacing="0" cellpadding="2">
+    <thead>
+        <tr>
+            <th colspan="2">
+                <h4><font style='color:#009;'>v1.9.4-1009 (alpha)</font></h4>
+                <em>Quick fix for bugs identified for Build 1008.</em>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+      <tr><th width='220'>osTicket Version</th><td>1.9.4</td></tr>
+      <tr><th>Release Date</th><td>2014-11-18</td></tr>
+      <tr><th>Module Builds</th><td>
+        <ul style='list-style:none; font-size: 12px; margin: 0; padding: 0; padding-left: 0px;'>
+            <li>Status (Colors & Shapes): <?php echo getPackageBuild('status');?></li>
+        </ul>
+      </td></tr>
+      <tr><th>Release Type</th><td>Alpha</td></tr>
+      <tr><th>Developers</th><td>Andrew Rowland</td></tr>
+      <tr><th>Contributors</th><td></td></tr>
+    </tbody>
+</table>
+<h5>Modified Files</h5>
+This is the list of files modified by this version.  Please note, I will not go into details on what I changed in them (as it would be chaotic to list every change).  Also note, a file name with a <sup>*</sup> denotes a new file.
+
+<ul>
+  <li>Main Directory
+    <ul>
+      <li>include
+        <ul>
+          <li>staff
+            <ul>
+              <li>settings-modules.inc.php</li>
+              <li>modules.inc.php</li>
+              <li>modules-changelog.inc.php</li>
+              <li>modules-modstat.inc.php</li>
+              <li>tickets.inc.php</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h5>Bug Fixes</h5>
+<ul>
+  <li>Github Issue #14 - Corrected an issue where the status color would not display in the ticket queue.</li>
+  <li>GitHub Issue #15 - Corrected an issue where the status would show a previous status's colors if it does not have any colors defined.</li>
+  <li>Fixed a database inaccuracy caused by misconfigured SQL Insert for status color fields.</li>
+  <li>GitHub Issue #17 - In some locations, the Foreground Color variable was pulling the Background Color and vice versa.  This has been fixed on the Settings -> Module page and the Modules -> Statuses page.</li>
+  <li>GitHub Issue #18 - Changed the way the Status column shows in the queue.  It is now next to the Priority column and does not replace the Priority column.</li>
+</ul>
+<hr />
 
 <table class="form_table settings_table" width="900" border="0" cellspacing="0" cellpadding="2">
     <thead>
         <tr>
             <th colspan="2">
-                <h4><font style='color:#009;'>v1.9.4-1008 (alpha)</font></h4>
+                <h4><font style='color:#900;'>v1.9.4-1008 (alpha)</font></h4>
                 <em>Upgraded to osTicket v1.9.4.  This release starts the process to modify as few osTicket files as possible, moving those changes instead into new files more easily integrated into future osTicket releases.</em>
             </th>
         </tr>
     </thead>
     <tbody>
       <tr><th width='220'>osTicket Version</th><td>1.9.4</td></tr>
-      <tr><th>Release Date</th><td>2014-11-04</td></tr>
+      <tr><th>Release Date</th><td>2014-11-18</td></tr>
       <tr><th>Module Builds</th><td>
         <ul style='list-style:none; font-size: 12px; margin: 0; padding: 0; padding-left: 0px;'>
             <li>Status (Colors & Shapes): <?php echo getPackageBuild('status');?></li>

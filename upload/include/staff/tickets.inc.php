@@ -1,12 +1,12 @@
 <?php
 /*********************************************************************
 	Modified by Andrew Rowland <osmod@msrltech.com>
-	Edited: 2014/11/17
-	Build: 1008 [Alpha]
+	Edited: 2014/11/18
+	Build: 1009 [Alpha]
 	
 	Modifications:
 	  # Lines 387 - 390
-	  # Lines 494 - 502
+	  # Lines 494 - 515
 *********************************************************************/
 if(!defined('OSTSCPINC') || !$thisstaff || !@$thisstaff->isStaff()) die('Access Denied');
 
@@ -225,7 +225,7 @@ if($_GET['limit'])
 $qselect ='SELECT ticket.ticket_id,tlock.lock_id,ticket.`number`,ticket.dept_id,ticket.staff_id,ticket.team_id '
     .' ,user.name'
     .' ,email.address as email, dept.dept_name, status.state '
-         .' ,status.name as status,ticket.source,ticket.isoverdue,ticket.isanswered,ticket.created ';
+         .' ,status.name as status, status.properties as statusprop, ticket.source,ticket.isoverdue,ticket.isanswered,ticket.created ';
 
 $qfrom=' FROM '.TICKET_TABLE.' ticket '.
        ' LEFT JOIN '.TICKET_STATUS_TABLE. ' status
@@ -385,18 +385,19 @@ if ($results) {
                     <a <?php echo $status_sort; ?> href="tickets.php?sort=status&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
                         title="<?php echo sprintf(__('Sort by %s %s'), __('Status'), __($negorder)); ?>"><?php echo __('Status');?></a></th>
             <?php
-			} elseif ($cfg->get('mod_status_show_column')==1){ ?>
-            <th width="60">
-                <a <?php echo $status_sort; ?> href="tickets.php?sort=status&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
-                    title="<?php echo sprintf(__('Sort by %s %s'), __('Status'), __($negorder)); ?>"><?php echo __('Status');?></a></th>
-            <?php
-            } else { ?>
+			} else { ?>
                 <th width="60" <?php echo $pri_sort;?>>
                     <a <?php echo $pri_sort; ?> href="tickets.php?sort=pri&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
                         title="<?php echo sprintf(__('Sort by %s %s'), __('Priority'), __($negorder)); ?>"><?php echo __('Priority');?></a></th>
             <?php
             }
-
+			
+			if ($cfg->get('mod_status_show_column')==1){ ?>
+            <th width="60">
+                <a <?php echo $status_sort; ?> href="tickets.php?sort=status&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
+                    title="<?php echo sprintf(__('Sort by %s %s'), __('Status'), __($negorder)); ?>"><?php echo __('Status');?></a></th>
+            <?php
+            }
             if($showassigned ) {
                 //Closed by
                 if(!strcasecmp($status,'closed')) { ?>
@@ -491,22 +492,46 @@ if ($results) {
                     if(!strcasecmp($row['state'],'open'))
                         $displaystatus="<b>$displaystatus</b>";
                     echo "<td>$displaystatus</td>";
-                } else if ($cfg->get('mod_status_show_column')==1){ 
-					$display = $cfg->get('mod_status_display_text');
-                ?>
-                  <td>
-                    <div style='<?php $sql = "SELECT propertyName, valueCurrent FROM ".MOD_STATUS_PROPERTY." WHERE objectId=".$cfg->get('mod_status_display'); $res = db_query($sql); while(list($prop, $val)=db_fetch_row($res)){ echo $prop . ": " . $val . "; ";} ?>' <?php if($display != 2){?> title='<?php echo $row['status']?>'<?php }?>>
-                      <?php if($display !=1) echo $row['status'];?>
-                  	</div>
-                  </td>
-                <?php
-            	} else {
+                } else {
 				?>
                 <td class="nohover" align="center" style="background-color:<?php echo $row['priority_color']; ?>;">
                     <?php echo $row['priority_desc']; ?></td>
                 <?php
                 }
+				
+                if ($cfg->get('mod_status_show_column')==1){ 
+					$display = $cfg->get('mod_status_display_text');
                 ?>
+              <td>
+				<?php
+                    $remove = array('"', '{', '}');
+                    $dump = str_replace($remove, "", $row['statusprop']);
+                    $dump2 = str_replace(",", ":", $dump);
+                    $vardump = explode(':', $dump2);
+        
+                    $fg = $cfg->get('mod_status_fgcolor'); $prop[$fg]='';
+                    $bg = $cfg->get('mod_status_bgcolor'); $prop[$bg]='';
+                    $bd = $cfg->get('mod_status_bdcolor'); $prop[$db]='';
+        
+                    for($i = 0; $i<count($vardump); $i+=2){
+                        $prop[$vardump[$i]] = $vardump[$i+1];
+                    }
+                ?>
+                <div <?php if($cfg->get('mod_status_display_text')!=2){echo "title='".$row['status']."'";}?> style='background-color:<?php echo $prop[$bg];?>; color:<?php echo $prop[$fg];?>; border-color:<?php echo $prop[$bd];?> 
+                <?php
+                    $sql = "SELECT propertyName, valueCurrent FROM ".MOD_STATUS_PROPERTY." WHERE objectId=".$cfg->get('mod_status_display');
+                    $res = db_query($sql);
+                    while(list($pname, $val)=db_fetch_row($res)){
+                        echo $pname . ": " . $val . "; ";
+                    }
+                ?>
+                '>
+                <?php if($cfg->get('mod_status_display_text')!=1){echo $row['status'];}?>
+                </div>
+              <?php
+				}
+			  ?>
+              </td>
                 <td nowrap>&nbsp;<?php echo $lc; ?></td>
             </tr>
             <?php
