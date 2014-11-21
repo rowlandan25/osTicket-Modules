@@ -151,8 +151,8 @@
 
 		if(!build1008()){logEntry('Function Returned False', 'Function build1008() returned false.  Function initialize($module) returning false.', 2); return false;}
 		if(!$cfg->updateAll(array(
-			'mod_status_version'=>'v1.9.4-1008 (alpha)',
-			'mod_status_sysbuild'=>'1008',
+			'mod_status_version'=>'v1.9.4-1009 (alpha)',
+			'mod_status_sysbuild'=>'1009',
 		))){logEntry('Configuration Update Failed', 'Failed to update configuration in function initialize($module)', 1); return false;}
 		logEntry('Module Initialized - $module', 'Module $module successfully initialized at build '.getPackageBuild($module), 1);
 		break;
