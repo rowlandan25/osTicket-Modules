@@ -94,6 +94,19 @@
         return true;
   }
   
+  function dbDropTable($table){
+	    $sql = "SELECT COUNT(table_name) FROM information_schema.tables WHERE table_name = '$table' AND table_schema='".DBNAME."' LIMIT 1";
+        if(!$res = db_query($sql)) return false;        //unable to query database schema table
+
+        $count = db_result($res);
+        if($count==1){
+          $sql="DROP TABLE $table";
+          if(!$res = db_query($sql)) return false;      //table failed to drop
+          logEntry('Table Dropped', 'Table [$table] dropped from database successfully.', 3);
+        }
+        return true;
+  }
+  
   function dbchecker(){
         global $cfg;
         /****************************
@@ -218,8 +231,7 @@
 					$oldStat[$id] = db_insert_id();
 				}
 
-				$sql = "DROP TABLE ".MOD_STATUS;
-				if(!$res = db_query($sql)){logEntry('Query Failed', 'Failed to execute query: $sql', 3); return false;}
+				dbDropTable(MOD_STATUS);
 
 				/****************************
 					Statuses Copied
@@ -234,8 +246,7 @@
 					if(!$ires = db_query($isql)){logEntry('Query Failed', 'Failed to execute query: $isql', 3); return false;}
 				}
 
-				$sql = "DROP TABLE ".MOD_STATUS_ASSIGNMENTS;
-				if(!$res = db_query($sql)){logEntry('Query Failed', 'Failed to execute query: $sql', 3); return false;}
+				dbDropTable(MOD_STATUS_ASSIGNMENTS);
 
 				/****************************
 					Delete Config Keys
@@ -278,8 +289,8 @@
 				break;
 		  }
 		if(!$cfg->updateAll(array(
-			'mod_status_version'=>'v1.9.4-1009 (alpha)',
-			'mod_status_sysbuild'=>'1009',
+			'mod_status_version'=>'v1.9.4-1010 (alpha)',
+			'mod_status_sysbuild'=>'1010',
 			))){logEntry('Configuration Update Failed', 'Failed to update configuration in function upgrade($module) Case 1008', 1); return false;}
 		logEntry('Upgrade Successful', 'Module $module Upgrade to Build '.$pbuild.' from Build '.$sbuild, 2);
 		break; 
