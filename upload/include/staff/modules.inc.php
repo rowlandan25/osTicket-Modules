@@ -165,41 +165,6 @@
 		/*
 		##	End Module: Status
 		*/
-	  case 'status_actions':
-		/****************************
-			Modify Database
-		****************************/
-		$dbsql[0]="CREATE TABLE ".MOD_STATUS_ACTIONS."(id INT(64) NOT NULL AUTO_INCREMENT, PRIMARY KEY(id), actionName VARCHAR(64), setStatus INT(64) DEFAULT NULL, isActive INT(1))";
-		$dbsql[1]="INSERT INTO ".MOD_LIST." (moduleName, modulePath) VALUES ('Status Actions', 'modacts')";
-
-		for($i=0; $i<2;$i++){
-		  //if(!$res = db_query($dbsql[$i])){if($debug>=3) echo "SQL Query Errors: [".db_errno()."] ".db_error()."<br />"; if($debug>=2) echo "Function Return Value: <b>FALSE</b><br />"; return false;}
-		}
-
-		/****************************
-			Add Database Items
-		****************************/
-		$actionList = array(
-			"Ticket Assigned", "Re-Open Ticket", "Close Ticket", "SLA Overdue", "Due Date Overdue", "Client Response"
-		);
-
-		for($x = 0; $x < count($actionList); $x++){
-			$sql="INSERT INTO ".MOD_STATUS_ACTIONS."(actionName, isActive) VALUES ('" . $actionList[$x] . "', 0)";
-			if(!$res = db_query($sql)){if($debug>=3) echo "SQL Query Errors: [".db_errno()."] ".db_error()."<br />"; if($debug>=2) echo "Function Return Value: <b>FALSE</b><br />"; return false;}
-		}
-
-		/****************************
-			Update Configuration
-		****************************/		
-		if(!$cfg->updateAll(array(
-			'mod_status_actions_init'=>'1',
-			'mod_status_version'=>'v1.1.03-alpha.1010',
-			'mod_status_sysbuild'=>'1010',
-		)))return false;
-		break;
-		/*
-		##	End Module: Status Actions
-		*/
 	}
 	return true;
   }
@@ -412,24 +377,8 @@
 		/*
 		##	End Module: Status
 		*/
-	  case 'status_actions':
-		$sql = "SELECT id FROM ".MOD_STATUS_ACTIONS;
-		$res = db_query($sql);
-
-		while(list($actionId) = db_fetch_row($res)){
-			if(strcmp('on', $data['action_'.$actionId]) == 0)
-				$active = 1;
-			else
-				$active = 0;
-			$sql = "UPDATE ".MOD_STATUS_ACTIONS." SET setStatus='".$data['new_status_'.$actionId]."', isActive=".$active." WHERE id=".$actionId;
-			db_query($sql);
-		}
-		break;
-		/*
-		##	End Module: Status Actions
-		*/
 	}
-	
+
 	logEntry('Settings Updated', 'Staff Member succesfully updated settings.  update($module, $data)', 2);
 	return true;
   }
