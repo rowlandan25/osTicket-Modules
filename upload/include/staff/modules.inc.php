@@ -124,7 +124,7 @@
         if(!dbCreateTable(MOD_LIST, $tfields)) return false;
 
         if(!$cfg->updateAll(array(
-                'mod_pack_version'=>'v1.9.4-alpha.1010',
+                'mod_pack_version'=>'v1.1.06-alpha.1010',
                 'mod_pack_sysbuild'=>'1010',
         ))){logEntry('Configuration Update Failed', 'Failed to update configuration in function dbchecker()', 1); return false;}
         return true;
@@ -170,7 +170,7 @@
 
 		if(!build1008()){logEntry('Function Returned False', 'Function build1008() returned false.  Function initialize($module) returning false.', 2); return false;}
 		if(!$cfg->updateAll(array(
-			'mod_status_version'=>'v1.1.03-alpha.1010',
+			'mod_status_version'=>'v1.1.06-alpha.1010',
 			'mod_status_sysbuild'=>'1010',
 		))){logEntry('Configuration Update Failed', 'Failed to update configuration in function initialize($module)', 1); return false;}
 		logEntry('Module Initialized - $module', 'Module $module successfully initialized at build '.getPackageBuild($module), 1);
@@ -281,15 +281,14 @@
 					This should only be done if we are upgrading from Build 1005 - 1008.  The upgrader for 1008 has been corrected for anyone upgrading from a build earlier than 1008.
 				****************************/
 				if($sbuild >= 1005 && $sbuild <= 1008){
-					$sql = "DROP TABLE ".MOD_STATUS_ACTIONS;
-					if(!$res = db_query($sql)){logEntry('Query Failed', 'Failed to execute query: $sql', 3); return false;}
+					dbDropTable(MOD_STATUS_ACTIONS);
 				}
 				
 
 				break;
 		  }
 		if(!$cfg->updateAll(array(
-			'mod_status_version'=>'v1.9.4-1010 (alpha)',
+			'mod_status_version'=>'v1.1.06-alpha.1010',
 			'mod_status_sysbuild'=>'1010',
 			))){logEntry('Configuration Update Failed', 'Failed to update configuration in function upgrade($module) Case 1008', 1); return false;}
 		logEntry('Upgrade Successful', 'Module $module Upgrade to Build '.$pbuild.' from Build '.$sbuild, 2);
