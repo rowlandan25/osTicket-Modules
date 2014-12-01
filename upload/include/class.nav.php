@@ -228,7 +228,7 @@ class AdminNav extends StaffNav{
     }
 
     function getSubMenus(){
-
+		global $cfg;
         $submenus=array();
         foreach($this->getTabs() as $k=>$tab){
             $subnav=array();
@@ -277,11 +277,13 @@ class AdminNav extends StaffNav{
 					/****************************
 						Module Sub Menu Lists
 					****************************/
-					$sql = "SELECT moduleName, modulePath, icon FROM ".MOD_LIST." ORDER BY moduleName ASC";
-					$res = db_query($sql);
-					
-					while(list($name, $path, $icon) = db_fetch_row($res)){
-						$subnav[]=array('desc'=>__($name),'href'=>'module.php?t='.$path,'iconclass'=>$icon);
+					if($cfg->exists('mod_pack_sysbuild') && $cfg->get('mod_pack_sysbuild') >= 1010){
+						$sql = "SELECT moduleName, modulePath, icon FROM ".MOD_LIST." ORDER BY moduleName ASC";
+						$res = db_query($sql);
+						
+						while(list($name, $path, $icon) = db_fetch_row($res)){
+							$subnav[]=array('desc'=>__($name),'href'=>'module.php?t='.$path,'iconclass'=>$icon);
+						}
 					}
 					break;
                 case 'apps':

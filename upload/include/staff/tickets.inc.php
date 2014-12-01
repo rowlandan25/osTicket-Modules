@@ -514,10 +514,10 @@ if ($results) {
                     $bd = $cfg->get('mod_status_bdcolor'); $prop[$db]='';
         
                     for($i = 0; $i<count($vardump); $i+=2){
-                        $prop[$vardump[$i]] = $vardump[$i+1];
+                        $prop[$vardump[$i]] = $vardump[$i+1];						
                     }
                 ?>
-                <div <?php if($cfg->get('mod_status_display_text')!=2){echo "title='".$row['status']."'";}?> style='background-color:<?php echo $prop[$bg];?>; color:<?php echo $prop[$fg];?>; border-color:<?php echo $prop[$bd];?> 
+                <div <?php if($cfg->get('mod_status_display_text')!=2){echo "title='".$row['status']."'";}?> style='background-color:<?php echo $prop[$bg];?>; color:<?php echo $prop[$fg];?>; border-color:<?php echo $prop[$bd];?> ;
                 <?php
                     $sql = "SELECT propertyName, valueCurrent FROM ".MOD_STATUS_PROPERTY." WHERE objectId=".$cfg->get('mod_status_display');
                     $res = db_query($sql);

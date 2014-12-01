@@ -9,10 +9,10 @@
 	Build: 1009 [Alpha]
 **********************************************************************/
   define_tables(TABLE_PREFIX);
-  $debug = 0;	//Debug Level -> 0: None -- 1: Include Function Calls/Returns -- 2: Include Sub Function Messages -- 3: Include SQL Statements & Results -- 4: Include Variable Value Changes
-
+  
   function update_modules(){
-	dbchecker();
+	if(!dbchecker()) return false;
+
 	/****************************
 		Are we updating or
 		installing?
@@ -50,8 +50,8 @@
 
   function getPackageBuild($package){
 	$build = array();
-	$build['pack'] = 1009;
-	$build['status'] = 1009;
+	$build['pack'] = 1010;
+	$build['status'] = 1010;
 	$build['status_actions'] = 1000;
 	$build['equipment'] = 1000;
 	return $build[$package];
@@ -76,37 +76,45 @@
 	$res = db_query($sql);  
   }
   
-  function dbchecker(){
-	global $cfg;
-	/****************************
-		Database Check
-		Module Log Table
-	****************************/
-	$sql = "SELECT COUNT(table_name) FROM information_schema.tables WHERE table_name = '".MOD_LOG."' AND table_schema='".DBNAME."' LIMIT 1 ";
-	if(!$res = db_query($sql)) return false;
-	$count = db_result($res);
-	if($count<1){
-	  $sql="CREATE TABLE ".MOD_LOG."(id INT(64) NOT NULL AUTO_INCREMENT, PRIMARY KEY(id), logName VARCHAR (64), logDetail VARCHAR(255), logType INT(3))";
-	  if(!$res = db_query($sql)) return false;
-	  logEntry('Table Created', 'Table '.MOD_LOG.' created in database successfully.', 3);
-	}
-	/****************************
-		Database Check
-		Module List Table
-	****************************/
-	$sql = "SELECT COUNT(table_name) FROM information_schema.tables WHERE table_name = '".MOD_LIST."' AND table_schema='".DBNAME."' LIMIT 1 ";
-	if(!$res = db_query($sql)){logEntry('Query Failed', 'Failed to execute query: $sql', 3); return false;}
-	$count = db_result($res);
-	if($count<1){
-	  $sql="CREATE TABLE ".MOD_LIST."(id INT(64) NOT NULL AUTO_INCREMENT, PRIMARY KEY(id), moduleName VARCHAR (64), UNIQUE(moduleName), modulePath VARCHAR(64), icon VARCHAR(64))";
-	  if(!$res = db_query($sql)){logEntry('Query Failed', 'Failed to execute query: $sql', 3); return false;}
-	  logEntry('Table Created', 'Table '.MOD_LOG.' created in database successfully', 3); 
-	}
+  function dbCreateTable($table, $fields){
+        $sql = "SELECT COUNT(table_name) FROM information_schema.tables WHERE table_name = '$table' AND table_schema='".DBNAME."' LIMIT 1";
+        if(!$res = db_query($sql)) return false;        //unable to query database schema table
 
-	if(!$cfg->updateAll(array(
-		'mod_pack_version'=>'v1.9.4-1009 (alpha)',
-		'mod_pack_sysbuild'=>'1009',
-	))){logEntry('Configuration Update Failed', 'Failed to update configuration in function dbchecker()', 1); return false;}
+        $count = db_result($res);
+        if($count==0){
+          $sql="CREATE TABLE $table (";
+          for($i = 0; $i<count($fields); $i++){
+                $sql.=$fields[$i];
+                if($i<count($fields)-1) $sql.=", ";
+          }
+          $sql.=")";
+          if(!$res = db_query($sql)) return false;      //table failed to create
+          logEntry('Table Created', 'Table [$table] created in database successfully.', 3);
+        }
+        return true;
+  }
+  
+  function dbchecker(){
+        global $cfg;
+        /****************************
+                Database Check
+                Module Log Table
+        ****************************/
+        $tfields = array('id INT(64) NOT NULL AUTO_INCREMENT', 'PRIMARY KEY(id)', 'logName VARCHAR (64)', 'logDetail VARCHAR(255)', 'logType INT(3)');
+        if(!dbCreateTable(MOD_LOG, $tfields)) return false;
+
+        /****************************
+                Database Check
+                Module List Table
+        ****************************/
+        $tfields = array('id INT(64) NOT NULL AUTO_INCREMENT', 'PRIMARY KEY(id)', 'moduleName VARCHAR (64)', 'UNIQUE(moduleName)', 'modulePath VARCHAR(64)', 'icon VARCHAR(64)');
+        if(!dbCreateTable(MOD_LIST, $tfields)) return false;
+
+        if(!$cfg->updateAll(array(
+                'mod_pack_version'=>'v1.9.4-alpha.1010',
+                'mod_pack_sysbuild'=>'1010',
+        ))){logEntry('Configuration Update Failed', 'Failed to update configuration in function dbchecker()', 1); return false;}
+        return true;
   }
 
   function defaultShapes(){
@@ -141,18 +149,16 @@
 		/****************************
 			Modify Database
 		****************************/
-		$sql="CREATE TABLE ".MOD_STATUS_OBJECT."(id INT(64) NOT NULL AUTO_INCREMENT, PRIMARY KEY(id), objectName VARCHAR(64), tag INT(16) NULL DEFAULT NULL)";
-		if(!$res = db_query($sql)){logEntry('Query Failed', 'Failed to create table '.MOD_STATUS_OBJECT.' in database.', 3); return false;}
-		logEntry('Table Created', 'Table '.MOD_STATUS_OBJECT.' created in database successfully', 3);
-
-		$sql="CREATE TABLE ".MOD_STATUS_PROPERTY."(id INT(64) NOT NULL AUTO_INCREMENT, PRIMARY KEY(id), objectId INT(64), propertyName VARCHAR(64), valueCurrent VARCHAR(64), valuePrevious VARCHAR(64) NULL DEFAULT NULL)";
-		if(!$res = db_query($sql)){logEntry('Query Failed', 'Failed to create table '.MOD_STATUS_PROPERTY.' in database.', 3); return false;}
-		logEntry('Table Created', 'Table '.MOD_STATUS_PROPERTY.' created in database successfully', 3);
+		$tfields = array('id INT(64) NOT NULL AUTO_INCREMENT', 'PRIMARY KEY(id)', 'objectName VARCHAR(64)', 'tag INT(16) NULL DEFAULT NULL');
+		dbCreateTable(MOD_STATUS_OBJECT, $tfields);
+		
+		$tfields = array('id INT(64) NOT NULL AUTO_INCREMENT', 'PRIMARY KEY(id)', 'objectId INT(64)', 'propertyName VARCHAR(64)', 'valueCurrent VARCHAR(64)', 'valuePrevious VARCHAR(64) NULL DEFAULT NULL');
+		dbCreateTable(MOD_STATUS_PROPERTY, $tfields);
 
 		if(!build1008()){logEntry('Function Returned False', 'Function build1008() returned false.  Function initialize($module) returning false.', 2); return false;}
 		if(!$cfg->updateAll(array(
-			'mod_status_version'=>'v1.9.4-1009 (alpha)',
-			'mod_status_sysbuild'=>'1009',
+			'mod_status_version'=>'v1.1.03-alpha.1010',
+			'mod_status_sysbuild'=>'1010',
 		))){logEntry('Configuration Update Failed', 'Failed to update configuration in function initialize($module)', 1); return false;}
 		logEntry('Module Initialized - $module', 'Module $module successfully initialized at build '.getPackageBuild($module), 1);
 		break;
@@ -167,7 +173,7 @@
 		$dbsql[1]="INSERT INTO ".MOD_LIST." (moduleName, modulePath) VALUES ('Status Actions', 'modacts')";
 
 		for($i=0; $i<2;$i++){
-		  if(!$res = db_query($dbsql[$i])){if($debug>=3) echo "SQL Query Errors: [".db_errno()."] ".db_error()."<br />"; if($debug>=2) echo "Function Return Value: <b>FALSE</b><br />"; return false;}
+		  //if(!$res = db_query($dbsql[$i])){if($debug>=3) echo "SQL Query Errors: [".db_errno()."] ".db_error()."<br />"; if($debug>=2) echo "Function Return Value: <b>FALSE</b><br />"; return false;}
 		}
 
 		/****************************
@@ -187,8 +193,8 @@
 		****************************/		
 		if(!$cfg->updateAll(array(
 			'mod_status_actions_init'=>'1',
-			'mod_status_actions_version'=>'v1.9.4-1008 (alpha)',
-			'mod_status_actions_sysbuild'=>'1008',
+			'mod_status_version'=>'v1.1.03-alpha.1010',
+			'mod_status_sysbuild'=>'1010',
 		)))return false;
 		break;
 		/*
@@ -212,9 +218,8 @@
 		switch($sbuild){
 			default:
 			case '1004':
-				$sql="CREATE TABLE ".MOD_STATUS_PROPERTY."(id INT(64) NOT NULL AUTO_INCREMENT, PRIMARY KEY(id), objectId INT(64), propertyName VARCHAR(64), valueCurrent VARCHAR(64))";
-				if(!$res = db_query($sql)){logEntry('Table Created', 'Table '.MOD_STATUS_PROPERTY.' created in database successfully', 3); return false;}
-
+				$tfields = array('id INT(64) NOT NULL AUTO_INCREMENT', 'PRIMARY KEY(id)', 'objectId INT(64)', 'propertyName VARCHAR(64)', 'valueCurrent VARCHAR(64)', 'valuePrevious VARCHAR(64) NULL DEFAULT NULL');
+				dbCreateTable(MOD_STATUS_PROPERTY, $tfields);
 				if(!$cfg->updateAll(array(
 					'mod_status_version'=>'v1.9.3-1005 (alpha)',
 					'mod_status_sysbuild'=>'1005',
@@ -276,11 +281,6 @@
 				if(!$res = db_query($sql)){logEntry('Query Failed', 'Failed to execute query: $sql', 3); return false;}
 				$sql = "DELETE FROM ".CONFIG_TABLE." WHERE `key`='mod_status_default_shape'";
 				if(!$res = db_query($sql)){logEntry('Query Failed', 'Failed to execute query: $sql', 3); return false;}
-
-				if(!$cfg->updateAll(array(
-					'mod_status_version'=>'v1.9.4-1008 (alpha)',
-					'mod_status_sysbuild'=>'1008',
-				))){logEntry('Configuration Update Failed', 'Failed to update configuration in function upgrade($module) Case 1006', 1); return false;}
 			case '1008':
 				/****************************
 					GitHub Issue #15
@@ -309,13 +309,14 @@
 					if(!$res = db_query($sql)){logEntry('Query Failed', 'Failed to execute query: $sql', 3); return false;}
 				}
 				
-				if(!$cfg->updateAll(array(
-					'mod_status_version'=>'v1.9.4-1009 (alpha)',
-					'mod_status_sysbuild'=>'1009',
-				))){logEntry('Configuration Update Failed', 'Failed to update configuration in function upgrade($module) Case 1008', 1); return false;}
-				logEntry('Upgrade Successful', 'Module $module Upgrade to Build '.$pbuild.' from Build '.$sbuild, 2);
+
 				break;
 		  }
+		if(!$cfg->updateAll(array(
+			'mod_status_version'=>'v1.9.4-1009 (alpha)',
+			'mod_status_sysbuild'=>'1009',
+			))){logEntry('Configuration Update Failed', 'Failed to update configuration in function upgrade($module) Case 1008', 1); return false;}
+		logEntry('Upgrade Successful', 'Module $module Upgrade to Build '.$pbuild.' from Build '.$sbuild, 2);
 		break; 
 		/*
 		##	End Module: Status

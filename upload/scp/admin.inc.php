@@ -21,7 +21,7 @@
 	  # Line 24
 **********************************************************************/
 require('staff.inc.php');
-require(STAFFINC_DIR.'modules.inc.php');
+require_once(STAFFINC_DIR.'modules.inc.php');
 
 //Make sure config is loaded and the staff is set and of admin type
 if(!$ost or !$thisstaff or !$thisstaff->isAdmin()){

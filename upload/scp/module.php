@@ -20,12 +20,14 @@ $moduleOptions=array(
 );
 
 
-$sql = "SELECT moduleName, modulePath FROM ".MOD_LIST." ORDER BY moduleName ASC";
-$res = db_query($sql);
-
-while(list($name, $path) = db_fetch_row($res)){
-        $newarray = array($name, 'modules.'.$path);
-        $moduleOptions[$path] = $newarray;
+if($cfg->exists('mod_pack_sysbuild') && $cfg->get('mod_pack_sysbuild') >= 1010){
+	$sql = "SELECT moduleName, modulePath FROM ".MOD_LIST." ORDER BY moduleName ASC";
+	$res = db_query($sql);
+	
+	while(list($name, $path) = db_fetch_row($res)){
+			$newarray = array($name, 'modules.'.$path);
+			$moduleOptions[$path] = $newarray;
+	}
 }
 
 //Handle a POST.
@@ -112,15 +114,18 @@ $config=($errors && $_POST)?Format::input($_POST):Format::htmlchars($cfg->getCon
 $ost->addExtraHeader('<meta name="tip-namespace" content="'.$page[1].'" />',
     "$('#content').data('tipNamespace', '".$page[1]."');");
 
-$sql = "SELECT modulePath FROM ".MOD_LIST;
-$res = db_query($sql);
 $found = 0;
-
-while(!$found && list($path) = db_fetch_row($res)){
-  if(strcmp($target, $path) == 0){
-		$nav->setTabActive('modules', ('module.php?t='.$path));
-		$found = 1;
-  }
+if($cfg->exists('mod_pack_sysbuild') && $cfg->get('mod_pack_sysbuild') >= 1010){
+	$sql = "SELECT modulePath FROM ".MOD_LIST;
+	$res = db_query($sql);
+	
+	
+	while(!$found && list($path) = db_fetch_row($res)){
+	  if(strcmp($target, $path) == 0){
+			$nav->setTabActive('modules', ('module.php?t='.$path));
+			$found = 1;
+	  }
+	}
 }
 
 if(!$found){
